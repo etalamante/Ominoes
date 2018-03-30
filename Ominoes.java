@@ -1,42 +1,63 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Ominoes {
 	public static void main(String args[])
 	{
-		OminoTest();
+		new Ominoes();
 	}
-	public static void OminoTest() {
-		Scanner myScanner = new Scanner(System.in);
+	public Ominoes() {
 		
-		System.out.print("Tests: ");
-		int tests = Integer.parseInt(myScanner.nextLine());
-		
+		String data[] = ReadFile("D-large-practice.in");
+
+		int tests = Integer.parseInt(data[0]);
+
 		for(int i=0;i<tests;i++){
-			test(i+1);
+			String input = data[i+1];
+			test(i+1, input);
 		}
 	}
-	public static void test(int numberOfCases) {
+	public static void test(int numberOfCases, String input) {
+		String xString = "", rString = "", cString = "";
 		int X, R, C; //X is the value choosed by Richard to be the X-omino base, R is the grid #rows and C is the grid #columns
+
+		int firstStart= 0;
 		
-		//String data;
+		for(int i=0; i<input.length(); i++){
+			if((input.charAt(i)+"").equals(" "))
+				break;
+			else
+				xString += input.charAt(i);
+
+			firstStart++;
+		}
+		X = Integer.parseInt(xString);
+
+		int secondStart= 0;
 		
-		System.out.println("Enter the number of squares of the omino-base: ");
+		for(int i= firstStart + 1; i<input.length(); i++){
+			if((input.charAt(i)+"").equals(" "))
+				break;
+			else
+				rString += input.charAt(i);
+
+			secondStart++;
+		}
+		R = Integer.parseInt(rString);
+
+		int thirdStart= 0;
 		
-		Scanner reader = new Scanner(System.in);
-		X = reader.nextInt();
-		
-		//data = reader.next().;
-		
-		System.out.println("Enter the number of rows of the grid: ");
-		
-		Scanner reader2 = new Scanner(System.in);
-		R = reader2.nextInt();
-		
-		System.out.println("Enter the number of columns of the grid: ");
-		
-		Scanner reader3 = new Scanner(System.in);
-		C = reader3.nextInt();
-		
+		for(int i= firstStart + secondStart + 2; i<input.length(); i++){
+			if((input.charAt(i)+"").equals(" "))
+				break;
+			else
+				cString += input.charAt(i);
+
+			thirdStart++;
+		}
+		C = Integer.parseInt(cString);
 		OminoGame(X, R, C, numberOfCases);
 
 	}
@@ -68,24 +89,62 @@ public class Ominoes {
 		else
 			fourthIndicator = (X / 2) + 1;
 		
-		String winner = "Richard";
+		String winner = "RICHARD";
 		
 		if(X < firstIndicator) {
 			if(secondIndicator == 0) {
 				if(R >= thirdIndicator || C >= thirdIndicator) {
 					if(R >= thirdIndicator) {
 						if(C >= fourthIndicator) {
-							winner = "Gabriel";
+							winner = "GABRIEL";
 						}
 					}
 					if(C >= thirdIndicator) {
 						if(R >= fourthIndicator) {
-							winner = "Gabriel";
+							winner = "GABRIEL";
 						}
 					}
 				}
 			}
 		}
-		System.out.println("Case #" + numberOfCases + ": " + winner + "\n");
+		System.out.println("Case #" + numberOfCases + ": " + winner);
+	}
+	public String[] ReadFile(String fileName){
+
+        // This will reference one line at a time
+        String line = null;
+        String fileString = "";
+
+        try {
+            // FileReader reads text files in the default encoding.
+            FileReader fileReader = 
+                new FileReader(fileName);
+
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader = 
+                new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null) {
+                fileString += line+",";
+            }   
+
+            // Always close files.
+            bufferedReader.close();         
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println(
+                "Unable to open file '" + 
+                fileName + "'");                
+        }
+        catch(IOException ex) {
+            System.out.println(
+                "Error reading file '" 
+                + fileName + "'");                  
+            // Or we could just do this: 
+            // ex.printStackTrace();
+        }
+
+
+        return fileString.split(",");
 	}
 }
